@@ -3,6 +3,10 @@ let screenY = window.innerHeight;
 
 let img_map = 'url(img/map.png)';
 let img_end = 'url(img/end.png)';
+let img_intro = 'url(img/intro.png)';
+let img_forest = 'url(img/forest.png)';
+let img_lake = 'url(img/lake.png)';
+let img_mountain = 'url(img/mountain.png)';
 
 let img_flute = 'url(img/flute.png)';
 let img_drum = 'url(img/drum.png)';
@@ -11,22 +15,21 @@ let img_elake = 'url(img/elake.png)';
 let img_eforest = 'url(img/eforest.png)';
 let img_emountain = 'url(img/emountain.png)';
 
-let levels = {lake: ['#0C7489',5,30,img_elake], forest: ['#5B8E7D',7,15,img_eforest], mountain: ['#94778B',1,40,img_emountain]};
+let levels = {lake: ['#0C7489',5,30,img_elake,img_lake], forest: ['#5B8E7D',7,15,img_eforest,img_forest], mountain: ['#777d94',1,40,img_emountain,img_mountain]};
 let currentlevel = null;
 let levelscene = 0;
 let currentscreen = 'intro';
 
 let enemies = {e1: {hp: 0, sleep: [false,0], mad: [false,0], weak: [false,0]}, e2: {hp: 0, sleep: [false,0], mad: [false,0], weak: [false,0]}, e3: {hp: 0,  sleep: [false,0], mad: [false,0], weak: [false,0]}};
 let currentenemy = 'e1';
-let players = {flute: {hp: 80, songs: [1,1,1], sprite: img_flute}, drum: {hp: 150, songs: [1,1,1], sprite: img_drum}, guitar: {hp: 100, songs: [1,1,1], sprite: img_guitar}};
+let players = {flute: {hp: 100, songs: [1,1,1], sprite: img_flute}, drum: {hp: 160, songs: [1,1,1], sprite: img_drum}, guitar: {hp: 130, songs: [1,1,1], sprite: img_guitar}};
 let currentplayer = null;
 let turn = 'player';
 
 let songs = {flute: [
-  ['Slumber',[0,0,0,0,98,110,98,110,130.81,164.81,220,0,164.81,0,130.81,164.81,196,0,164.81,0,130.81,164.81,174.61,0,164.81,130.81]],
-  ['Love',[0,0,0,0,110,138.595,164.815,207.655,246.945,0,220,246.945,0,220,207.655,138.595,0,123.47,146.835,185,220,277.185,0,246.945,277.185,246.945,0,207.655,220]],
-  ['Folly',[0,0,0,0,207.65,196,155.56,130.81,155.56,130.81,146.83,130.81,155.56,130.81,207.65,130.81,233.08,146.83,207.65,146.83,174.61,146.83,196,174.61,155.56,130.81]]
-], 
+  ['Slumber',[0,0,0,0,196,220,196,220,261.62,329.62,440,0,329.62,0,261.62,329.62,392,0,329.62,0,261.62,329.62,349.22,0,329.62,261.62]],
+  ['Love',[0,0,0,0,220,277.19,329.63,415.31,493.89,0,440,493.89,0,440,415.31,277.19,0,246.94,293.67,370,440,554.37,0,493.89,554.37,493.89,0,415.31,440]],
+  ['Folly',[0,0,0,0,415.30,392,311.12,261.62,311.12,261.62,293.66,261.62,311.12,261.62,415.30,261.62,466.16,293.66,415.30,293.66,349.22,293.66,392,349.22,311.12,261.62]]], 
 guitar: [
   ['Spring',[0,0,0,0,92.50,116.54,174.62,155.56,233.08,207.65,174.62,138.59,116.54,0,77.78,98.00,116.54,174.62,155.56]],
   ['Summer',[0,0,0,0,123.47,123.47,155.56,155.56,164.81,164.81,155.56,155.56,82.41,82.41,155.56,155.56,123.47,123.47,92.5,92.5,116.54,116.54,123.47,123.47]],
@@ -47,7 +50,7 @@ const dry = a_ctx.createGain();
 const wet = a_ctx.createGain();
 const delay = a_ctx.createDelay(1.0);
 const feedback = a_ctx.createGain();
-const instruments = {flute: [0.8,0.9,0.99,0.6], drum: [0.02,0.2,0.99,0.2], guitar: [0.02, 0.35, 0.98, 0.5]};
+const instruments = {flute: [0.8,0.9,0.99,0.5], drum: [0.02,0.2,0.99,0.2], guitar: [0.02, 0.35, 0.98, 0.4]};
 let notehits = 0;
 let targethits = 0;
 
@@ -92,7 +95,7 @@ function draw() {
     let opa = 0;
     ui.background.style.backgroundColor = 'wheat';
     ui.background.style.opacity = opa;
-    loadImg(img_map);
+    loadImg(img_intro);
     ui.background.innerHTML = 'But What Lies Beyond the Mountain';
     let fade = setInterval(() => {
       ui.background.style.opacity = opa;
@@ -121,7 +124,8 @@ function draw() {
     ui.next.hidden = true;
     ui.level.style.display = 'flex';
     ui.background.style.backgroundColor = currentlevel[0];
-    loadImg('none');
+    ui.background.style.backgroundRepeat = 'repeat-x';
+    loadImg(currentlevel[4]);
 
     if (combat) {
       ui.enemies.style.display = 'flex';
@@ -136,11 +140,21 @@ function draw() {
       notify('Keep going or go back ?');
     }
 
-    if (playerhit) {
-      ui.players.children[Object.keys(players).indexOf(targetplayer)].style.backgroundColor = '#F71735';
-      setTimeout(() => {ui.players.children[Object.keys(players).indexOf(targetplayer)].style.backgroundColor = 'wheat'},2000);
-      playerhit = false;
-    }
+if (playerhit) {
+  const playerIndex = Object.keys(players).indexOf(targetplayer);
+
+  if (playerIndex !== -1 && ui.players.children[playerIndex]) {
+    ui.players.children[playerIndex].style.backgroundColor = '#F71735';
+
+    setTimeout(() => {
+      if (ui.players.children[playerIndex]) {
+        ui.players.children[playerIndex].style.backgroundColor = 'wheat';
+      }
+    }, 2000);
+  }
+
+  playerhit = false;
+}
 
     if (enemyhit) {
       ui.enemies.children[Object.keys(enemies).indexOf(currentenemy)].style.backgroundColor = '#F71735';
@@ -241,19 +255,16 @@ function loadLevel(level) {
 
   if (currentlevel == levels.mountain) {
     combat = true;
-    enemies.e1.hp = 300;
+    enemies.e1.hp = 400;
   }
   else {
-    if (rand(0,4) > 0) {
-      combat = true;
-      const k = Object.keys(enemies);
-      const r = rand(0,2);
-      for (let i = 0; i < 3; i++) {
-        if (i <= r) enemies[k[i]].hp = 100;
-        else enemies[k[i]].hp = 0;
-      }
+    combat = true;
+    const k = Object.keys(enemies);
+    const r = rand(0,2);
+    for (let i = 0; i < 3; i++) {
+      if (i <= r) enemies[k[i]].hp = 100;
+      else enemies[k[i]].hp = 0;
     }
-    else combat = false;
   }
 
   draw();
@@ -282,6 +293,7 @@ function next() {
         ui.mountain.disabled = false;
         currentscreen = 'map';
         ui.map.style.display = 'block';
+        loadImg(img_map);
       },2000)
     }
     draw();
@@ -321,7 +333,6 @@ function checkStates() {
   const livingPlayer = Object.entries(players).find(([key, player]) => player.hp > 0);
   
   if (livingEnemy) currentenemy = livingEnemy[0];
-  if (livingPlayer) currentplayer = livingPlayer[0];
 
   if (turn == 'enemy') {
     Object.values(enemies).forEach(e => {
@@ -421,6 +432,7 @@ function playerAttack() {
         players.drum.hp -= 20;
         notify('Enemy & Drum loose 20 HP');
       }
+      targetplayer = 'drum';
       enemyhit = true;
       playerhit = true;
     }
@@ -566,7 +578,7 @@ function loadSong(s) {
       draw();
       note++;
     }
-  },500)
+  },400)
 }
 
 function playKey(k) {
@@ -620,6 +632,7 @@ function playNote(inst, note) {
 }
 
 document.addEventListener('keydown', e => {
+  e.preventDefault();
   if (menu == 'song') {
     if (e.key == 'ArrowUp') {playKey(0), piano.children[0].disabled = true};
     if (e.key == 'ArrowDown') {playKey(1), piano.children[1].disabled = true};
