@@ -6,13 +6,39 @@ Gather your adventurers, choose your path and face the monsters with your musica
 
 Discover what lies beyond the mountain
 
-Gameplay :
+**GAMEPLAY** :
 
 (!) SOUND ON, THIS IS A MUSICAL GAME (!)
 
 Desktop = Mouse left click, Arrow Keys
+
 Mobile = Touch
 
-(For the music playing phases, arrow keys work on laptop, otherwise mouse click / touch on arrow buttons)
+Music playing phases = Hit the corresponding keys when the black dots enter the red zone on the left, arrow keys work on laptop, otherwise mouse click / touch on left side screen buttons)
 
-PS: apologies for the atrocious quality of the intro screen and end screen but I had a *tiny* project size problem 10 hours before deadline and I panicked lol
+
+**ATTACKS** (depend on song completion %, >50% >80% 100%) :
+
+Slumber = Puts the selected enemy to sleep for X turns
+
+Love = Heals players
+
+Folly = Selected enemy gets mad for X turns, strikes himself.
+
+-
+
+Envy = Taunts enemies to attack only Drummer
+
+Anger = Attack all enemies
+
+Ego = Strong attack against selected enemy, Drummer looses the same amount of HP
+
+-
+
+Spring = Attack selected enemy
+
+Summer = Attack selected enemy and ricochet on random other for less HP
+
+Winter = Weaken selected enemy's attack strength
+
+
